@@ -62,3 +62,5 @@ for (i, captcha_image_file) in enumerate(captcha_image_files):
 
         # increment the count for the current key
         counts[letter_text] = count + 1
+else:
+    print("[ERROR] No image found at {}".format(CAPTCHA_IMAGE_FOLDER))

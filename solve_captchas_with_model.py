@@ -87,3 +87,6 @@ for image_file in captcha_image_files:
     # Show the annotated image
     cv2.imshow("Output", np.concatenate(outputs,axis=0))
     cv2.waitKey()
+else:
+    print("[ERROR] No image found at {}".format(CAPTCHA_IMAGE_FOLDER))
+    exit(1)
