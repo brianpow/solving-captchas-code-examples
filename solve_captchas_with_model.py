@@ -67,7 +67,7 @@ for image_file in captcha_image_files:
     filename = os.path.basename(image_file)
     captcha_correct_text = os.path.splitext(filename)[0]
     if len(letter_image_regions) != len(captcha_correct_text):
-        print("[ERROR] Finding contours from {} failed, expected {}, found {}".format(captcha_image_file, len(captcha_correct_text),str(len(letter_image_regions))))
+        print("[ERROR] Finding contours from {} failed, expected {}, found {}".format(image_file, len(captcha_correct_text),str(len(letter_image_regions))))
         continue
 
     # Sort the detected letter images based on the x coordinate to make sure
