@@ -15,7 +15,7 @@ counts = {}
 
 # loop over the image paths
 for (i, captcha_image_file) in enumerate(captcha_image_files):
-    print("[INFO] processing image {}/{}".format(i + 1, len(captcha_image_files)))
+    print("[INFO] processing {} ({}/{})".format(captcha_image_file, i + 1, len(captcha_image_files)))
 
     # Since the filename contains the captcha text (i.e. "2A2X.png" has the text "2A2X"),
     # grab the base filename as the text
