@@ -9,12 +9,6 @@ def pre_processing(image):
 
     # threshold the image (convert it to pure black and white)
     thresh = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
-    # cv2.imshow("Output", thresh)
-    # cv2.waitKey()
-    # print("next")
-    # cv2.imshow("Output", thresh.copy())
-    # cv2.waitKey()
-    # exit(1)
     return image, thresh
 
 def find_contours(image):
