@@ -32,35 +32,7 @@ for image_file in captcha_image_files:
 
     gray, thresh = helpers.pre_processing(image)
     
-    # find the contours (continuous blobs of pixels) the image
-    contours = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-    # Hack for compatibility with different OpenCV versions
-    try:
-        imutils.is_cv2()
-        contours = contours[0]
-    except:
-        contours = contours[1]
-
-    letter_image_regions = []
-
-    # Now we can loop through each of the four contours and extract the letter
-    # inside of each one
-    for contour in contours:
-        # Get the rectangle that contains the contour
-        (x, y, w, h) = cv2.boundingRect(contour)
-
-        # Compare the width and height of the contour to detect letters that
-        # are conjoined into one chunk
-        if w / h > 1.25:
-            # This contour is too wide to be a single letter!
-            # Split it in half into two letter regions!
-            half_width = int(w / 2)
-            letter_image_regions.append((x, y, half_width, h))
-            letter_image_regions.append((x + half_width, y, half_width, h))
-        else:
-            # This is a normal letter by itself
-            letter_image_regions.append((x, y, w, h))
+    _, letter_image_regions = helpers.find_contours(thresh)
 
     # If we found more or less than 4 letters in the captcha, our letter extraction
     # didn't work correcly. Skip the image instead of saving bad training data!
