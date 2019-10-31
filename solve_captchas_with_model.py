@@ -79,7 +79,10 @@ for image_file in captcha_image_files:
 
     # Print the captcha's text
     captcha_text = "".join(predictions)
-    print("CAPTCHA text for {} is: {}".format(image_file, captcha_text))
+    if captcha_text == captcha_correct_text:
+        print("[SUCCESS] Solving {} successful! Answer: {}".format(image_file, captcha_text))
+    else:
+        print("[FAILED] Solving {} failed! Guessed: {}, answer: {}".format(image_file, captcha_text, captcha_correct_text))
 
     # Show the annotated image
     cv2.imshow("Output", output)
