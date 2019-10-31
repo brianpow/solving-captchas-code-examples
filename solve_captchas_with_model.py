@@ -47,12 +47,14 @@ for image_file in captcha_image_files:
     # with the right letter
     letter_image_regions = sorted(letter_image_regions, key=lambda x: x[0])
 
-    # Create an output image and a list to hold our predicted letters
-    output = cv2.merge([gray] * 3)
+    # Create a list to hold output images and our predicted letters
     predictions = []
+    outputs = []
 
     # loop over the lektters
     for letter_bounding_box in letter_image_regions:
+        output = cv2.merge([gray] * 3)
+    
         # Grab the coordinates of the letter in the image
         x, y, w, h = letter_bounding_box
 
@@ -77,6 +79,7 @@ for image_file in captcha_image_files:
         cv2.rectangle(output, (x - 2, y - 2), (x + w + 4, y + h + 4), (0, 255, 0), 1)
         cv2.putText(output, letter, (x - 5, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (0, 255, 0), 2)
 
+        outputs.append(output)
     # Print the captcha's text
     captcha_text = "".join(predictions)
     if captcha_text == captcha_correct_text:
@@ -85,5 +88,5 @@ for image_file in captcha_image_files:
         print("[FAILED] Solving {} failed! Guessed: {}, answer: {}".format(image_file, captcha_text, captcha_correct_text))
 
     # Show the annotated image
-    cv2.imshow("Output", output)
+    cv2.imshow("Output", np.concatenate(outputs,axis=0))
     cv2.waitKey()
