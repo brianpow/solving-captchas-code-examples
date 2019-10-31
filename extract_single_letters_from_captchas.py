@@ -64,6 +64,7 @@ for (i, captcha_image_file) in enumerate(captcha_image_files):
     # If we found more or less than 4 letters in the captcha, our letter extraction
     # didn't work correcly. Skip the image instead of saving bad training data!
     if len(letter_image_regions) != len(captcha_correct_text):
+        print("[ERROR] Finding contours from {} failed, expected {}, found {}".format(captcha_image_file, len(captcha_correct_text),str(len(letter_image_regions))))
         continue
 
     # Sort the detected letter images based on the x coordinate to make sure
