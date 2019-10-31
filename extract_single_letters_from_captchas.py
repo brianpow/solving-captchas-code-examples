@@ -63,7 +63,7 @@ for (i, captcha_image_file) in enumerate(captcha_image_files):
 
     # If we found more or less than 4 letters in the captcha, our letter extraction
     # didn't work correcly. Skip the image instead of saving bad training data!
-    if len(letter_image_regions) != 4:
+    if len(letter_image_regions) != len(captcha_correct_text):
         continue
 
     # Sort the detected letter images based on the x coordinate to make sure
