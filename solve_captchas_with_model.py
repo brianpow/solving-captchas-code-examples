@@ -109,7 +109,7 @@ for image_file in captcha_image_files:
 
     # Print the captcha's text
     captcha_text = "".join(predictions)
-    print("CAPTCHA text is: {}".format(captcha_text))
+    print("CAPTCHA text for {} is: {}".format(image_file, captcha_text))
 
     # Show the annotated image
     cv2.imshow("Output", output)
