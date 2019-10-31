@@ -5,7 +5,7 @@ import numpy as np
 import imutils
 import cv2
 import pickle
-
+import os.path
 
 MODEL_FILENAME = "captcha_model.hdf5"
 MODEL_LABELS_FILENAME = "model_labels.dat"
@@ -69,7 +69,9 @@ for image_file in captcha_image_files:
 
     # If we found more or less than 4 letters in the captcha, our letter extraction
     # didn't work correcly. Skip the image instead of saving bad training data!
-    if len(letter_image_regions) != 4:
+    filename = os.path.basename(image_file)
+    captcha_correct_text = os.path.splitext(filename)[0]
+    if len(letter_image_regions) != len(captcha_correct_text):
         continue
 
     # Sort the detected letter images based on the x coordinate to make sure
