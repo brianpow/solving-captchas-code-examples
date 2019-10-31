@@ -5,15 +5,21 @@ import numpy as np
 from imutils import paths
 from sklearn.preprocessing import LabelBinarizer
 from sklearn.model_selection import train_test_split
+from helpers import resize_to_fit
+import argparse
+
+parser = argparse.ArgumentParser(description='Train model.')
+parser.add_argument('project', nargs='?', default="default",
+                    help='name of the project (subfolders of the required image files)')
+args = parser.parse_args()
+
 from keras.models import Sequential
 from keras.layers.convolutional import Conv2D, MaxPooling2D
 from keras.layers.core import Flatten, Dense
-from helpers import resize_to_fit
 
-
-LETTER_IMAGES_FOLDER = "extracted_letter_images"
-MODEL_FILENAME = "captcha_model.hdf5"
-MODEL_LABELS_FILENAME = "model_labels.dat"
+LETTER_IMAGES_FOLDER = os.path.join(args.project,"extracted_letter_images")
+MODEL_FILENAME = os.path.join(args.project, "captcha_model.hdf5")
+MODEL_LABELS_FILENAME = os.path.join(args.project, "model_labels.dat")
 
 def count_folder(folder):
     files_count = 0

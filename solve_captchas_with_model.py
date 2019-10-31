@@ -1,4 +1,3 @@
-from keras.models import load_model
 import helpers
 from imutils import paths
 import numpy as np
@@ -6,10 +5,23 @@ import imutils
 import cv2
 import pickle
 import os.path
+import argparse
 
-MODEL_FILENAME = "captcha_model.hdf5"
-MODEL_LABELS_FILENAME = "model_labels.dat"
-CAPTCHA_IMAGE_FOLDER = "generated_captcha_images"
+parser = argparse.ArgumentParser(description='Randomly solve captcha image.')
+parser.add_argument('project', nargs='?', default="default",
+                    help='name of the project (subfolders of the required image files)')
+parser.add_argument('-n','--number', type=int, default=10,
+                    help='Number of images to be processed')
+parser.add_argument('-f','--failed-only', action='store_true',
+                    help='Preview failed images only')
+
+args = parser.parse_args()
+
+from keras.models import load_model
+
+MODEL_FILENAME = os.path.join(args.project, "captcha_model.hdf5")
+MODEL_LABELS_FILENAME = os.path.join(args.project, "model_labels.dat")
+CAPTCHA_IMAGE_FOLDER = os.path.join(args.project, "generated_captcha_images")
 
 
 # Load up the model labels (so we can translate model predictions to actual letters)
@@ -23,7 +35,7 @@ model = load_model(MODEL_FILENAME)
 # In the real world, you'd replace this section with code to grab a real
 # CAPTCHA image from a live website.
 captcha_image_files = list(paths.list_images(CAPTCHA_IMAGE_FOLDER))
-captcha_image_files = np.random.choice(captcha_image_files, size=(10,), replace=False)
+captcha_image_files = np.random.choice(captcha_image_files, size=(args.number,), replace=False)
 
 # loop over the image paths
 for image_file in captcha_image_files:
@@ -81,6 +93,8 @@ for image_file in captcha_image_files:
     captcha_text = "".join(predictions)
     if captcha_text == captcha_correct_text:
         print("[SUCCESS] Solving {} successful! Answer: {}".format(image_file, captcha_text))
+        if args.failed_only:
+            continue
     else:
         print("[FAILED] Solving {} failed! Guessed: {}, answer: {}".format(image_file, captcha_text, captcha_correct_text))
 

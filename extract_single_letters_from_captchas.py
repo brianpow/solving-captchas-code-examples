@@ -4,9 +4,17 @@ import cv2
 import glob
 import imutils
 import helpers
+import argparse
 
-CAPTCHA_IMAGE_FOLDER = "generated_captcha_images"
-OUTPUT_FOLDER = "extracted_letter_images"
+parser = argparse.ArgumentParser(description='Extract letters from captcha image.')
+parser.add_argument('project', nargs='?', default="default",
+                    help='name of the project (subfolders of the required image files)')
+parser.add_argument('-n','--number', type=int, default=999999,
+                    help='Number of images to be processed')
+args = parser.parse_args()
+
+CAPTCHA_IMAGE_FOLDER = os.path.join(args.project, "generated_captcha_images")
+OUTPUT_FOLDER = os.path.join(args.project, "extracted_letter_images")
 
 
 # Get a list of all the captcha images we need to process
@@ -15,6 +23,10 @@ counts = {}
 
 # loop over the image paths
 for (i, captcha_image_file) in enumerate(captcha_image_files):
+    if args.number == i:
+        print("[INFO] {} files limited reached. See help to override".format(args.number) )
+        break
+
     print("[INFO] processing {} ({}/{})".format(captcha_image_file, i + 1, len(captcha_image_files)))
 
     # Since the filename contains the captcha text (i.e. "2A2X.png" has the text "2A2X"),
