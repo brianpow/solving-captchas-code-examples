@@ -15,11 +15,18 @@ LETTER_IMAGES_FOLDER = "extracted_letter_images"
 MODEL_FILENAME = "captcha_model.hdf5"
 MODEL_LABELS_FILENAME = "model_labels.dat"
 
+def count_folder(folder):
+    files_count = 0
+    folders_count = 0
+    for _, folders, files in os.walk(folder):
+        folders_count += len(folders)
+        files_count += len(files)
+    return folders_count, files_count
 
 # initialize the data and labels
 data = []
 labels = []
-
+nodes_count, _ = count_folder(LETTER_IMAGES_FOLDER)
 # loop over the input images
 for image_file in paths.list_images(LETTER_IMAGES_FOLDER):
     # Load the image and convert it to grayscale
@@ -73,13 +80,13 @@ model.add(Flatten())
 model.add(Dense(500, activation="relu"))
 
 # Output layer with 32 nodes (one for each possible letter/number we predict)
-model.add(Dense(32, activation="softmax"))
+model.add(Dense(nodes_count, activation="softmax"))
 
 # Ask Keras to build the TensorFlow model behind the scenes
 model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"])
 
 # Train the neural network
-model.fit(X_train, Y_train, validation_data=(X_test, Y_test), batch_size=32, epochs=10, verbose=1)
+model.fit(X_train, Y_train, validation_data=(X_test, Y_test), batch_size=nodes_count, epochs=10, verbose=1)
 
 # Save the trained model to disk
 model.save(MODEL_FILENAME)
