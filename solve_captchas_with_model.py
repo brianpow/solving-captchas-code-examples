@@ -1,5 +1,5 @@
 from keras.models import load_model
-from helpers import resize_to_fit
+import helpers
 from imutils import paths
 import numpy as np
 import imutils
@@ -27,16 +27,11 @@ captcha_image_files = np.random.choice(captcha_image_files, size=(10,), replace=
 
 # loop over the image paths
 for image_file in captcha_image_files:
-    # Load the image and convert it to grayscale
+    # Load the image
     image = cv2.imread(image_file)
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    # Add some extra padding around the image
-    image = cv2.copyMakeBorder(image, 20, 20, 20, 20, cv2.BORDER_REPLICATE)
-
-    # threshold the image (convert it to pure black and white)
-    thresh = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
-
+    gray, thresh = helpers.pre_processing(image)
+    
     # find the contours (continuous blobs of pixels) the image
     contours = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -81,7 +76,7 @@ for image_file in captcha_image_files:
     letter_image_regions = sorted(letter_image_regions, key=lambda x: x[0])
 
     # Create an output image and a list to hold our predicted letters
-    output = cv2.merge([image] * 3)
+    output = cv2.merge([gray] * 3)
     predictions = []
 
     # loop over the lektters
@@ -90,10 +85,10 @@ for image_file in captcha_image_files:
         x, y, w, h = letter_bounding_box
 
         # Extract the letter from the original image with a 2-pixel margin around the edge
-        letter_image = image[y - 2:y + h + 2, x - 2:x + w + 2]
+        letter_image = gray[y - 2:y + h + 2, x - 2:x + w + 2]
 
         # Re-size the letter image to 20x20 pixels to match training data
-        letter_image = resize_to_fit(letter_image, 20, 20)
+        letter_image = helpers.resize_to_fit(letter_image, 20, 20)
 
         # Turn the single image into a 4d list of images to make Keras happy
         letter_image = np.expand_dims(letter_image, axis=2)
