@@ -110,5 +110,5 @@ for image_file in captcha_image_files:
             os.rename(image_file, os.path.join(os.path.dirname(image_file), captcha_text + os.path.splitext(image_file)[1]))
 
     # Show the annotated image
-    cv2.imshow("Output", np.concatenate(outputs,axis=0))
+    cv2.imshow(image_file, np.concatenate(outputs,axis=0))
     cv2.waitKey()
