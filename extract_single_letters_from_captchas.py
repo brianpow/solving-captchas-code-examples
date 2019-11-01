@@ -5,12 +5,15 @@ import glob
 import imutils
 import helpers
 import argparse
+import numpy as np
 
 parser = argparse.ArgumentParser(description='Extract letters from captcha image.')
 parser.add_argument('project', nargs='?', default="default",
                     help='name of the project (subfolders of the required image files)')
 parser.add_argument('-n','--number', type=int, default=999999,
                     help='Number of images to be processed')
+parser.add_argument('-f','--failed', action='store_true', default=False,
+                    help='Preview image failed to find contours.')
 args = parser.parse_args()
 
 CAPTCHA_IMAGE_FOLDER = os.path.join(args.project, "generated_captcha_images")
@@ -46,8 +49,25 @@ for (i, captcha_image_file) in enumerate(captcha_image_files):
     
     # If we found more or less than 4 letters in the captcha, our letter extraction
     # didn't work correcly. Skip the image instead of saving bad training data!
+    outputs = []
+
+    # loop over the lektters
+    for letter_bounding_box in letter_image_regions:
+        output = cv2.merge([thresh] * 3)
+    
+        # Grab the coordinates of the letter in the image
+        x, y, w, h = letter_bounding_box
+
+        # draw the prediction on the output image
+        cv2.rectangle(output, (x - 2, y - 2), (x + w + 4, y + h + 4), (0, 255, 0), 1)
+        
+        outputs.append(output)
+    
     if len(letter_image_regions) != len(captcha_correct_text):
         print("[ERROR] Finding contours from {} failed, expected {}, found {}".format(captcha_image_file, len(captcha_correct_text),str(len(letter_image_regions))))
+        if args.failed:
+            cv2.imshow(filename, np.concatenate(outputs,axis=0))
+            cv2.waitKey()
         continue
 
     # Sort the detected letter images based on the x coordinate to make sure
