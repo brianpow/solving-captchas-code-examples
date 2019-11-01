@@ -14,6 +14,8 @@ parser.add_argument('-n','--number', type=int, default=10,
                     help='Number of images to be processed')
 parser.add_argument('-f','--failed-only', action='store_true',
                     help='Preview failed images only')
+parser.add_argument('-r','--rename', type=int, metavar='size', default=0, 
+                    help='Rename file based on guessed captcha if guessed captcha equal to size')
 
 args = parser.parse_args()
 
@@ -101,6 +103,8 @@ for image_file in captcha_image_files:
             continue
     else:
         print("[FAILED] Solving {} failed! Guessed: {}, answer: {}".format(image_file, captcha_text, captcha_correct_text))
+        if args.rename > 0 and args.rename == len(captcha_text):
+            os.rename(image_file, os.path.join(os.path.dirname(image_file), captcha_text + os.path.splitext(image_file)[1]))
 
     # Show the annotated image
     cv2.imshow("Output", np.concatenate(outputs,axis=0))
