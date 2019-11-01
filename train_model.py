@@ -51,10 +51,11 @@ for image_file in paths.list_images(LETTER_IMAGES_FOLDER):
     # Add the letter image and it's label to our training data
     data.append(image)
     labels.append(label)
-else:
+
+if len(data) == 0:
     print("[ERROR] No image found at {}".format(LETTER_IMAGES_FOLDER))
     exit(1)
-    
+
 # scale the raw pixel intensities to the range [0, 1] (this improves training)
 data = np.array(data, dtype="float") / 255.0
 labels = np.array(labels)

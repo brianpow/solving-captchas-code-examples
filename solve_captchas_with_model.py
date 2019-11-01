@@ -37,6 +37,10 @@ model = load_model(MODEL_FILENAME)
 captcha_image_files = list(paths.list_images(CAPTCHA_IMAGE_FOLDER))
 captcha_image_files = np.random.choice(captcha_image_files, size=(args.number,), replace=False)
 
+if len(captcha_image_files) == 0:
+    print("[ERROR] No image found at {}".format(CAPTCHA_IMAGE_FOLDER))
+    exit(1)
+
 # loop over the image paths
 for image_file in captcha_image_files:
     # Load the image
@@ -101,6 +105,3 @@ for image_file in captcha_image_files:
     # Show the annotated image
     cv2.imshow("Output", np.concatenate(outputs,axis=0))
     cv2.waitKey()
-else:
-    print("[ERROR] No image found at {}".format(CAPTCHA_IMAGE_FOLDER))
-    exit(1)

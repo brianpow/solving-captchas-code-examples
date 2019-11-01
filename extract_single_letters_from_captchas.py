@@ -21,6 +21,9 @@ OUTPUT_FOLDER = os.path.join(args.project, "extracted_letter_images")
 captcha_image_files = glob.glob(os.path.join(CAPTCHA_IMAGE_FOLDER, "*"))
 counts = {}
 
+if len(captcha_image_files) == 0:
+    print("[ERROR] No image found at {}".format(CAPTCHA_IMAGE_FOLDER))
+    exit(1)
 # loop over the image paths
 for (i, captcha_image_file) in enumerate(captcha_image_files):
     if args.number == i:
@@ -74,5 +77,3 @@ for (i, captcha_image_file) in enumerate(captcha_image_files):
 
         # increment the count for the current key
         counts[letter_text] = count + 1
-else:
-    print("[ERROR] No image found at {}".format(CAPTCHA_IMAGE_FOLDER))
