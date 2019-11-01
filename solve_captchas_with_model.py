@@ -37,7 +37,10 @@ model = load_model(MODEL_FILENAME)
 # In the real world, you'd replace this section with code to grab a real
 # CAPTCHA image from a live website.
 captcha_image_files = list(paths.list_images(CAPTCHA_IMAGE_FOLDER))
-captcha_image_files = np.random.choice(captcha_image_files, size=(args.number,), replace=False)
+try:
+    captcha_image_files = np.random.choice(captcha_image_files, size=(args.number,), replace=False)
+except:
+    pass
 
 if len(captcha_image_files) == 0:
     print("[ERROR] No image found at {}".format(CAPTCHA_IMAGE_FOLDER))
