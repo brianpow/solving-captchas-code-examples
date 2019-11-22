@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import helpers
 from imutils import paths
 import numpy as np

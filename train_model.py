@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import cv2
 import pickle
 import os.path
