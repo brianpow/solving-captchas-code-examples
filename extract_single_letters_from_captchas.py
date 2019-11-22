@@ -44,27 +44,32 @@ for (i, captcha_image_file) in enumerate(captcha_image_files):
     image = cv2.imread(captcha_image_file)
     
     gray, thresh = helpers.pre_processing(image)
-    
-    _, letter_image_regions = helpers.find_contours(thresh)
-    
+
+    detected_contours, filtered_contours = helpers.find_contours(thresh)
+
     # If we found more or less than 4 letters in the captcha, our letter extraction
     # didn't work correcly. Skip the image instead of saving bad training data!
     outputs = []
 
+    if len(filtered_contours) != len(captcha_correct_text):
+        color = (0, 0, 255)
+    else:
+        color = (0, 255, 0)
     # loop over the lektters
-    for letter_bounding_box in letter_image_regions:
+    for letter_bounding_box in filtered_contours:
         output = cv2.merge([thresh] * 3)
-    
+
         # Grab the coordinates of the letter in the image
         x, y, w, h = letter_bounding_box
 
         # draw the prediction on the output image
-        cv2.rectangle(output, (x - 2, y - 2), (x + w + 4, y + h + 4), (0, 255, 0), 1)
-        
+        cv2.rectangle(output, (x, y), (x + w, y + h), color, 1)
+
         outputs.append(output)
-    
-    if len(letter_image_regions) != len(captcha_correct_text):
-        print("[ERROR] Finding contours from {} failed, expected {}, found {}".format(captcha_image_file, len(captcha_correct_text),str(len(letter_image_regions))))
+
+    # Show the annotated image
+    if len(filtered_contours) != len(captcha_correct_text):
+        print("[ERROR] Finding contours from {} failed, expected: {}, detected: {}, filtered: {}".format(captcha_image_file, len(captcha_correct_text),str(len(detected_contours)),str(len(filtered_contours))))
         if args.failed:
             cv2.imshow(filename, np.concatenate(outputs,axis=0))
             cv2.waitKey()
@@ -73,10 +78,10 @@ for (i, captcha_image_file) in enumerate(captcha_image_files):
     # Sort the detected letter images based on the x coordinate to make sure
     # we are processing them from left-to-right so we match the right image
     # with the right letter
-    letter_image_regions = sorted(letter_image_regions, key=lambda x: x[0])
+    filtered_contours = sorted(filtered_contours, key=lambda x: x[0])
 
     # Save out each letter as a single image
-    for letter_bounding_box, letter_text in zip(letter_image_regions, captcha_correct_text):
+    for letter_bounding_box, letter_text in zip(filtered_contours, captcha_correct_text):
         # Grab the coordinates of the letter in the image
         x, y, w, h = letter_bounding_box
 
