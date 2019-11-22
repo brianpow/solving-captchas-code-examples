@@ -14,6 +14,8 @@ parser.add_argument('-n','--number', type=int, default=999999,
                     help='Number of images to be processed')
 parser.add_argument('-f','--failed', action='store_true', default=False,
                     help='Preview image failed to find contours.')
+parser.add_argument('-s','--success', action='store_true', default=False,
+                    help='Preview image with correct contours found.')
 args = parser.parse_args()
 
 CAPTCHA_IMAGE_FOLDER = os.path.join(args.project, "generated_captcha_images")
@@ -74,6 +76,10 @@ for (i, captcha_image_file) in enumerate(captcha_image_files):
             cv2.imshow(filename, np.concatenate(outputs,axis=0))
             cv2.waitKey()
         continue
+    elif args.success:
+        cv2.imshow(filename, np.concatenate(outputs,axis=0))
+        cv2.waitKey()
+
 
     # Sort the detected letter images based on the x coordinate to make sure
     # we are processing them from left-to-right so we match the right image
