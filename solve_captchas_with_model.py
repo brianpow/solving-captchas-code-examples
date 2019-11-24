@@ -123,4 +123,4 @@ for image_file in captcha_image_files:
     # Show the annotated image
     cv2.imshow(image_file, np.concatenate(outputs,axis=0))
     cv2.waitKey()
-print("Accuracy: %2.2f%% (%d/%d)" % (success/len(captcha_image_files)*100, success, len(captcha_image_files)))
+print("Accuracy: %2.2f%% (%d/%d)" % (float(success)/len(captcha_image_files)*100, success, len(captcha_image_files)))
