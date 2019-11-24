@@ -11,6 +11,8 @@ import argparse
 parser = argparse.ArgumentParser(description='Randomly solve captcha image.')
 parser.add_argument('project', nargs='?', default="default",
                     help='name of the project (subfolders of the required image files)')
+parser.add_argument('image', nargs='*', default=[],
+                    help='image(s) to be solved')
 parser.add_argument('-n','--number', type=int, default=10,
                     help='Number of images to be processed')
 parser.add_argument('-f','--failed-only', action='store_true',
@@ -37,11 +39,14 @@ model = load_model(MODEL_FILENAME)
 # Grab some random CAPTCHA images to test against.
 # In the real world, you'd replace this section with code to grab a real
 # CAPTCHA image from a live website.
-captcha_image_files = list(paths.list_images(CAPTCHA_IMAGE_FOLDER))
-try:
-    captcha_image_files = np.random.choice(captcha_image_files, size=(args.number,), replace=False)
-except:
-    pass
+if(len(args.image)):
+    captcha_image_files = args.image
+else:
+    captcha_image_files = list(paths.list_images(CAPTCHA_IMAGE_FOLDER))
+    try:
+        captcha_image_files = np.random.choice(captcha_image_files, size=(args.number,), replace=False)
+    except:
+        pass
 
 if len(captcha_image_files) == 0:
     print("[ERROR] No image found at {}".format(CAPTCHA_IMAGE_FOLDER))
