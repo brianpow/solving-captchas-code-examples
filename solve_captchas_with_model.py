@@ -47,6 +47,9 @@ if len(captcha_image_files) == 0:
     print("[ERROR] No image found at {}".format(CAPTCHA_IMAGE_FOLDER))
     exit(1)
 
+success = 0
+failed = 0
+
 # loop over the image paths
 for image_file in captcha_image_files:
     # Load the image
@@ -102,10 +105,12 @@ for image_file in captcha_image_files:
     # Print the captcha's text
     captcha_text = "".join(predictions)
     if captcha_text == captcha_correct_text:
+        success += 1
         print("[SUCCESS] Solving {} successful! Answer: {}".format(image_file, captcha_text))
         if args.failed_only:
             continue
     else:
+        failed += 1
         print("[FAILED] Solving {} failed! Guessed: {}, answer: {}".format(image_file, captcha_text, captcha_correct_text))
         if args.rename > 0 and args.rename == len(captcha_text):
             os.rename(image_file, os.path.join(os.path.dirname(image_file), captcha_text + os.path.splitext(image_file)[1]))
@@ -113,3 +118,4 @@ for image_file in captcha_image_files:
     # Show the annotated image
     cv2.imshow(image_file, np.concatenate(outputs,axis=0))
     cv2.waitKey()
+print("Accuracy: %2.2f%% (%d/%d)" % (success/len(captcha_image_files)*100, success, len(captcha_image_files)))
