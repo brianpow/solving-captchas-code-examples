@@ -57,6 +57,7 @@ failed = 0
 
 # loop over the image paths
 for image_file in captcha_image_files:
+    print("[INFO] Processing {}...".format(image_file))
     # Load the image
     image = cv2.imread(image_file)
 
