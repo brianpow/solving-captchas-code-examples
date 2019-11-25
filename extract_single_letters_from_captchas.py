@@ -31,6 +31,7 @@ if len(captcha_image_files) == 0:
     print("[ERROR] No image found at {}".format(CAPTCHA_IMAGE_FOLDER))
     exit(1)
 # loop over the image paths
+success = 0.0
 for (i, captcha_image_file) in enumerate(captcha_image_files):
     if args.number == i:
         print("[INFO] {} files limited reached. See help to override".format(args.number) )
@@ -81,6 +82,7 @@ for (i, captcha_image_file) in enumerate(captcha_image_files):
         cv2.imshow(filename, np.concatenate(outputs,axis=0))
         cv2.waitKey()
 
+    success += 1
 
     # Sort the detected letter images based on the x coordinate to make sure
     # we are processing them from left-to-right so we match the right image
@@ -109,3 +111,5 @@ for (i, captcha_image_file) in enumerate(captcha_image_files):
 
         # increment the count for the current key
         counts[letter_text] = count + 1
+print("[INFO] %2.2f%% (%d/%d) captcha proceeded successfully" %
+      (success/len(captcha_image_files)*100, success, len(captcha_image_files)))
